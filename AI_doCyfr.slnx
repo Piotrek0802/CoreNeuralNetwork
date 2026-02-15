@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AI_doCyfr.vcxproj" Id="3dd5d43d-503a-49d3-8d99-e364f26be619" />
+</Solution>
