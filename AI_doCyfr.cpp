@@ -153,11 +153,22 @@ public:
 	}
 	void train(const Vector& input, Vector& correctOutput) {
 		realOutput = feedForward(input);
+		E.assign(outSize, 0.0);
 		for (int i = 0; i < realOutput.size(); i++)
 		{
 			E[i] = (realOutput[i] - correctOutput[i]) * realOutput[i] * (1 - realOutput[i]);
 		}
+		layers.back().E = E;
 
+		for (int i = ileHiddenLayers - 1; i >= 0; i--)
+		{
+			layers[i].train(layers[i + 1].E, layers[i + 1].wagi);
+		}
+
+		for (int i = 0; i < layers.size(); i++)
+		{
+			layers[i].noweWagi(silaUczenia);
+		}
 	}
 	void zapiszDane() {
 		std::fstream plik;
@@ -213,26 +224,35 @@ private:
 
 int main()
 {
-	std::cout << "Budowanie sieci...\n";
+	//test czy siec zyje!
+	std::cout << "Budowanie sieci\n";
 
-	// Tworzymy rozmiary warstw ukrytych (np. jedna warstwa 64 neurony)
-	std::vector<int> ukryte = { 64 };
+	std::vector<int> ukryte = { 4 }; 
+	Network mojaSiec("moj_model.txt", 1, 2, 1, ukryte, SIGMOID);
 
-	// Tworzymy sieć: plik, 1 ukryta, wejście 784, wyjście 10, wektor ukrytych, SIGMOID
-	Network mojaSiec("moj_model.txt", 1, 784, 10, ukryte, SIGMOID);
+	Vector testInput = { 1, 0, 0, 0 , 0, 1, 0, 0, 1};
+	Vector oczekiwanyWynik = { 1 }; 
 
-	std::cout << "Siec zbudowana! Liczba warstw (Layer): " << mojaSiec.layers.size() << "\n";
+	std::cout << "\n--- PRZED TRENINGIEM ---\n";
+	Vector wynikPrzed = mojaSiec.feedForward(testInput);
+	std::cout << "Wynik sieci: " << wynikPrzed[0] << " (Szef oczekuje: " << oczekiwanyWynik[0] << ")\n";
 
-	// Tworzymy testowy wektor wejściowy (784 jedynki)
-	Vector testInput(784, 1.0);
+	std::cout << "\nRozpoczynam bolesny proces nauki (10 000 powtorzen)...\n";
 
-	std::cout << "Przepuszczam dane przez siec...\n";
-	Vector wynik = mojaSiec.feedForward(testInput);
-
-	// Wypisujemy wynik (powinno być 10 liczb z zakresu 0-1)
-	std::cout << "Wynik sieci:\n";
-	for (int i = 0; i < wynik.size(); i++)
+	for (int i = 0; i <= 100000; i++)
 	{
-		std::cout << i << ": " << wynik[i] << std::endl;
+		mojaSiec.train(testInput, oczekiwanyWynik);
+
+		if (i % 1000 == 0)
+		{
+			Vector podglad = mojaSiec.feedForward(testInput);
+			std::cout << "Epoka " << i << " -> Aktualny wynik: " << podglad[0] << "\n";
+		}
 	}
+
+	std::cout << "\n--- PO TRENINGU ---\n";
+	Vector wynikPo = mojaSiec.feedForward(testInput);
+	std::cout << "Wynik sieci: " << wynikPo[0] << " (Szef oczekuje: " << oczekiwanyWynik[0] << ")\n";
+
+	return 0;
 }
