@@ -37,10 +37,10 @@ class Layer
 public:
 	const int inputSize, outputSize;
 	Matrix wagi;
-	Vector bias, obliczenia, poAktywacji;
+	Vector bias, obliczenia, poAktywacji, E, wejscie;
 	rodzajAktywacji rodzAktywacji;
 
-	Layer(int inSize, int ouSize, rodzajAktywacji rrodzAktywacji) 
+	Layer(int inSize, int ouSize, rodzajAktywacji rrodzAktywacji)
 		:inputSize(inSize), outputSize(ouSize), rodzAktywacji(rrodzAktywacji)
 	{
 		bias.resize(outputSize);
@@ -51,7 +51,7 @@ public:
 		{
 			wagi[i].resize(inputSize);
 		}
-		if (rodzAktywacji==SIGMOID)
+		if (rodzAktywacji == SIGMOID)
 		{
 			randDlaSigmoidy(wagi);
 		}
@@ -61,35 +61,64 @@ public:
 	{
 	}
 
+
+	double pochodna(double& x) {
+		if (rodzAktywacji == SIGMOID)
+		{
+			return x * (1 - x);
+		}
+	}
 	Vector feedForward(Vector& input) {
+		wejscie = input;
 		for (int i = 0; i < outputSize; i++)
 		{
 			double wynik = 0;
-			for (size_t j = 0; j < inputSize; j++)
+			for (int j = 0; j < inputSize; j++)
 			{
 				wynik += input[j] * wagi[i][j];
 			}
 			wynik += bias[i];
 			obliczenia[i] = wynik;
-			if (rodzAktywacji==SIGMOID)
+			if (rodzAktywacji == SIGMOID)
 			{
 				poAktywacji[i] = sigmoid(wynik);
 			}
 		}
 		return poAktywacji;
 	}
-
+	void train(Vector& Eprevious, Matrix& wagiPrevious) {
+		E.assign(outputSize, 0.0);
+		for (int i = 0; i < outputSize; i++)
+		{
+			for (int j = 0; j < Eprevious.size(); j++)
+			{
+				E[i] += Eprevious[j] * wagiPrevious[j][i] * pochodna(poAktywacji[i]);
+			}
+		}
+	}
+	void noweWagi(const double& silaUczenia) {
+		for (int i = 0; i < outputSize; i++)
+		{
+			for (int j = 0; j < inputSize; j++)
+			{
+				wagi[i][j] = wagi[i][j] - (silaUczenia * E[i] * wejscie[j]);
+			}
+			bias[i] = bias[i] - (silaUczenia * E[i]);
+		}
+	}
 private:
-	
+
 };
 class Network
 {
 public:
 	const std::string nazwaPliku;
-	const int ileHiddenLayers, inSize, outSize;
-	const std::vector<int>ileNeuronsInLayers;
+	int ileHiddenLayers, inSize, outSize;
+	double silaUczenia = 0.2;
+	std::vector<int>ileNeuronsInLayers;
 	rodzajAktywacji rodzAktywacji;
 	std::vector<Layer> layers;
+	Vector realOutput, E;
 	Network(std::string nnazwaPliku, int iileHiddenLayers, int iinSize, int ooutSize, std::vector<int> iileNeuronsInLayers, rodzajAktywacji rrodzAktywacji)
 		: nazwaPliku(nnazwaPliku), ileHiddenLayers(iileHiddenLayers), inSize(iinSize), outSize(ooutSize), ileNeuronsInLayers(iileNeuronsInLayers), rodzAktywacji(rrodzAktywacji)
 	{
@@ -112,7 +141,7 @@ public:
 			layers.push_back(Layer(ileNeuronsInLayers.back(), outSize, rodzAktywacji));
 		}
 	}
-	~Network(){}
+	~Network() {}
 
 	Vector feedForward(const Vector& input) {
 		Vector tempInput = input;
@@ -122,10 +151,18 @@ public:
 		}
 		return tempInput;
 	}
+	void train(const Vector& input, Vector& correctOutput) {
+		realOutput = feedForward(input);
+		for (int i = 0; i < realOutput.size(); i++)
+		{
+			E[i] = (realOutput[i] - correctOutput[i]) * realOutput[i] * (1 - realOutput[i]);
+		}
+
+	}
 	void zapiszDane() {
 		std::fstream plik;
 		plik.open(nazwaPliku, std::ios::out);
-		if (plik.good()!=true||plik.is_open()!=true)
+		if (plik.good() != true || plik.is_open() != true)
 		{
 			std::cout << "Blad otwarcia pliku do zapisu!" << std::endl;
 			return;
@@ -164,7 +201,7 @@ public:
 		{
 			for (int j = 0; j < layers[i].outputSize; j++)
 			{
-				plik << layers[i].bias[j]<<" ";
+				plik << layers[i].bias[j] << " ";
 			}
 			plik << "\n";
 		}
@@ -194,7 +231,8 @@ int main()
 
 	// Wypisujemy wynik (powinno być 10 liczb z zakresu 0-1)
 	std::cout << "Wynik sieci:\n";
-	for (double w : wynik) {
-		std::cout << w << "\n";
+	for (int i = 0; i < wynik.size(); i++)
+	{
+		std::cout << i << ": " << wynik[i] << std::endl;
 	}
 }
