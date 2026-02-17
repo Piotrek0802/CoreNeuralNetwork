@@ -221,38 +221,128 @@ private:
 
 };
 
-
-int main()
-{
-	//test czy siec zyje!
+void testXOR () {
+	//test sieci dla xor
 	std::cout << "Budowanie sieci\n";
+	std::vector<int> ukryte = { 8 };
 
-	std::vector<int> ukryte = { 4 }; 
-	Network mojaSiec("moj_model.txt", 1, 2, 1, ukryte, SIGMOID);
+	Network mojaSiec("plik.txt", ukryte.size(), 2, 1, ukryte, SIGMOID);
 
-	Vector testInput = { 1, 0, 0, 0 , 0, 1, 0, 0, 1};
-	Vector oczekiwanyWynik = { 1 }; 
+	Matrix dane{
+		{ 1,0 },
+		{0, 1},
+		{ 1, 1 },
+		{ 0, 0 } };
+	Matrix wyniki{ {1},{1},{0},{0} };
 
-	std::cout << "\n--- PRZED TRENINGIEM ---\n";
-	Vector wynikPrzed = mojaSiec.feedForward(testInput);
-	std::cout << "Wynik sieci: " << wynikPrzed[0] << " (Szef oczekuje: " << oczekiwanyWynik[0] << ")\n";
-
-	std::cout << "\nRozpoczynam bolesny proces nauki (10 000 powtorzen)...\n";
-
-	for (int i = 0; i <= 100000; i++)
+	for (int i = 0; i < 100000; i++)
 	{
-		mojaSiec.train(testInput, oczekiwanyWynik);
-
-		if (i % 1000 == 0)
+		for (size_t j = 0; j < 4; j++)
 		{
-			Vector podglad = mojaSiec.feedForward(testInput);
-			std::cout << "Epoka " << i << " -> Aktualny wynik: " << podglad[0] << "\n";
+			mojaSiec.train(dane[j], wyniki[j]);
+		}
+		if (i % 10000 == 0)
+		{
+			std::cout << "Epoka: " << i << std::endl;
+			for (int j = 0; j < 4; j++)
+			{
+				Vector odpowiedz = mojaSiec.feedForward(dane[j]);
+
+				std::cout << "Wejscie: [" << dane[j][0] << ", " << dane[j][1] << "] -> ";
+				std::cout << "Wynik sieci: " << odpowiedz[0];
+				std::cout << " (Oczekiwano: " << wyniki[j][0] << ")\n";
+			}
+		}
+	}
+	std::cout << "\n--- WYNIKI EGZAMINU PO TRENINGU ---\n";
+	for (int j = 0; j < 4; j++)
+	{
+		Vector odpowiedz = mojaSiec.feedForward(dane[j]);
+
+		std::cout << "Wejscie: [" << dane[j][0] << ", " << dane[j][1] << "] -> ";
+		std::cout << "Wynik sieci: " << odpowiedz[0];
+		std::cout << " (Oczekiwano: " << wyniki[j][0] << ")\n";
+	}
+
+}
+void testParzystosci(const int& x) {
+	std::cout << "Budowanie sieci dla " << x << " wejsc...\n";
+	std::vector<int> ukryte = { 8 }; 
+
+	Network mojaSiec("plik.txt", ukryte.size(), x, 1, ukryte, SIGMOID);
+
+	int liczbaPrzypadkow = 10;
+
+	Matrix dane(liczbaPrzypadkow, Vector(x, 0.0));
+	Matrix wyniki(liczbaPrzypadkow, Vector(1, 0.0));
+
+	for (int i = 0; i < liczbaPrzypadkow; i++)
+	{
+		int ileJedynek = 0;
+		for (int j = 0; j < x; j++)
+		{
+			if (rand() % 2 == 0) {
+				dane[i][j] = 0.0;
+			}
+			else {
+				dane[i][j] = 1.0;
+				ileJedynek++;
+			}
+		}
+
+		if (ileJedynek % 2 == 0) {
+			wyniki[i][0] = 0.0;
+		}
+		else {
+			wyniki[i][0] = 1.0;
 		}
 	}
 
-	std::cout << "\n--- PO TRENINGU ---\n";
-	Vector wynikPo = mojaSiec.feedForward(testInput);
-	std::cout << "Wynik sieci: " << wynikPo[0] << " (Szef oczekuje: " << oczekiwanyWynik[0] << ")\n";
+
+	std::cout << "Rozpoczynam trening...\n";
+	for (int i = 0; i <= 1000; i++)
+	{
+		for (int j = 0; j < liczbaPrzypadkow; j++)
+		{
+			mojaSiec.train(dane[j], wyniki[j]);
+		}
+
+		if (i % 250 == 0)
+		{
+			std::cout << "Epoka: " << i << "\n";
+			for (int j = 0; j < liczbaPrzypadkow; j++)
+			{
+				Vector odpowiedz = mojaSiec.feedForward(dane[j]);
+
+				std::cout << "Wejscie: [ ";
+				for (int k = 0; k < x; k++) {
+					std::cout << dane[j][k] << " ";
+				}
+				std::cout << "] -> ";
+				std::cout << "Wynik sieci: " << odpowiedz[0];
+				std::cout << " (Oczekiwano: " << wyniki[j][0] << ")\n";
+			}
+		}
+	}
+
+	std::cout << "\n--- WYNIKI EGZAMINU PO TRENINGU ---\n";
+	for (int j = 0; j < liczbaPrzypadkow; j++)
+	{
+		Vector odpowiedz = mojaSiec.feedForward(dane[j]);
+
+		std::cout << "Wejscie: [ ";
+		for (int k = 0; k < x; k++) {
+			std::cout << dane[j][k] << " ";
+		}
+		std::cout << "] -> ";
+		std::cout << "Wynik sieci: " << odpowiedz[0];
+		std::cout << " (Oczekiwano: " << wyniki[j][0] << ")\n";
+	}
+}
+int main()
+{
+	//testXOR();//test czy siec jest wstanie wykonac operacje XOR
+	testParzystosci(10);//test czy siec jest w stanie sprawdzic parzystosc wystepowania cyfry: 1
 
 	return 0;
 }

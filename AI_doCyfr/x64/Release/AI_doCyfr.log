@@ -1,0 +1,9 @@
+﻿  AI_doCyfr.cpp
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(229,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(273,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
+  Trwa generowanie kodu
+  10 of 409 functions ( 2.4%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    26 functions had inline decision re-evaluated but remain unchanged
+  Zakończono generowanie kodu
+  AI_doCyfr.vcxproj -> C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\x64\Release\AI_doCyfr.exe
