@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "AI_doCyfr\\x64\\Debug\\NeuralNetwork.h.obj",
+            "outputs": [
+                "C:\\Users\\Piotrek\\Piotrek\\Programowanie\\C++\\AI_doCyfr\\AI_doCyfr\\x64\\Debug\\vc145.pdb",
+                "AI_doCyfr\\x64\\Debug\\",
+                "C:\\Users\\Piotrek\\Piotrek\\Programowanie\\C++\\AI_doCyfr\\AI_doCyfr\\x64\\Debug\\NeuralNetwork.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "NeuralNetwork.h",
+                    "source-path": "c:\\users\\piotrek\\piotrek\\programowanie\\c++\\ai_docyfr\\neuralnetwork.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

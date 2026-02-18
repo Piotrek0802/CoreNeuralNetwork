@@ -1,9 +1,14 @@
-﻿  AI_doCyfr.cpp
-C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(229,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
-C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(272,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
+﻿  main.cpp
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(19,28): warning C4244: "+=": konwersja z "_Ty" do "int", możliwa utrata danych
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(19,28): warning C4244:         with
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(19,28): warning C4244:         [
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(19,28): warning C4244:             _Ty=double
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(19,28): warning C4244:         ]
+  (kompilowanie pliku źródłowego „main.cpp”)
+  
   Trwa generowanie kodu
-  18 of 418 functions ( 4.3%) were compiled, the rest were copied from previous compilation.
-    5 functions were new in current compilation
-    35 functions had inline decision re-evaluated but remain unchanged
+  2 of 420 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   AI_doCyfr.vcxproj -> C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\x64\Release\AI_doCyfr.exe

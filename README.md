@@ -1,54 +1,48 @@
-# CoreNeuralNetwork 🧠
+# CoreNeuralNetwork (C++)
 
-A custom, multi-layer artificial neural network (MLP) built completely from scratch in pure C++. 
+Własnoręcznie napisany od zera, lekki silnik sieci neuronowej (Multi-Layer Perceptron) w czystym języku C++. Projekt nie korzysta z żadnych zewnętrznych bibliotek matematycznych ani AI. Cała matematyka – propagacja w przód (feedforward), wsteczna propagacja błędu (backpropagation) i aktualizacja wag – została zaimplementowana od podstaw.
 
-This project was developed to gain a deep understanding of neural network architectures, forward propagation, and memory management in C++ without relying on external machine learning frameworks like PyTorch or TensorFlow.
+## 🚀 Cechy projektu
+* **Header-only:** Cały silnik znajduje się w jednym pliku `NeuralNetwork.h`. Wystarczy wrzucić go do swojego folderu z projektem i załączyć. Nie wymaga skomplikowanego linkowania.
+* **Dynamiczna architektura:** Konstruktor pozwala na elastyczne tworzenie dowolnej liczby warstw ukrytych oraz dowolnej liczby neuronów w każdej z warstw.
+* **Zapis i odczyt modeli:** Wbudowane funkcje `saveData()` i `loadData()` do bezstratnego zapisywania wyuczonego modelu (wag i biasów z maksymalną precyzją `double`) do pliku tekstowego i błyskawicznego jego wczytywania.
+* **Funkcje aktywacji:** Zaimplementowana obsługa nieliniowej funkcji Sigmoid z przygotowaną strukturą enum pod łatwe rozszerzenie o kolejne (np. ReLU, Tanh).
 
-## ✨ Features
-* **Zero Dependencies:** Built using only the C++ Standard Library (`<vector>`, `<iostream>`, `<fstream>`, `<random>`).
-* **Dynamic Architecture:** Easily construct networks with any number of hidden layers and neurons per layer.
-* **Custom Serialization:** Save and load trained network weights and biases using a structured, human-readable text file format.
-* **Memory Efficient:** Object-oriented design utilizing `std::vector` with precise memory pre-allocation (`reserve`).
+## 🛠️ Jak używać?
 
-## 🚀 Quick Start (Example Usage)
+Wystarczy pobrać plik `NeuralNetwork.h`, umieścić go w folderze ze swoim kodem źródłowym i zainicjować obiekt sieci.
 
-Building and running the network is incredibly simple. You can define the architecture dynamically:
-
-~~~cpp
-#include "Network.h" // Replace with your actual header/file name
+```cpp
+#include <iostream>
+#include <vector>
+#include "NeuralNetwork.h"
 
 int main() {
-    // 1. Define hidden layers (e.g., one hidden layer with 64 neurons)
-    std::vector<int> hiddenLayers = { 64 };
+    // 1. Konfiguracja architektury: 2 wejścia, 1 warstwa ukryta (8 neuronów), 1 wyjście
+    std::vector<int> hiddenLayers = { 8 };
     
-    // 2. Build the network: (File name, Hidden layers count, Input size, Output size, Hidden layers structure, Activation)
-    Network myNet("model.txt", 1, 784, 10, hiddenLayers, SIGMOID);
-    
-    // 3. Prepare dummy data (e.g., 784 inputs)
-    std::vector<double> input(784, 1.0);
-    
-    // 4. Feed forward
-    std::vector<double> output = myNet.feedForward(input);
-    
-    // 5. Save the state for later
-    myNet.zapiszDane();
-    
+    // 2. Tworzenie instancji sieci (plik zapisu, liczba warstw ukrytych, wejścia, wyjścia, struktura, funkcja aktywacji)
+    Network myBrain("model.txt", hiddenLayers.size(), 2, 1, hiddenLayers, SIGMOID);
+
+    // Przykładowe wejście i oczekiwane wyjście (np. dla bramki logicznej XOR)
+    std::vector<double> input = { 1.0, 0.0 };
+    std::vector<double> expectedOutput = { 1.0 };
+
+    // 3. Trening sieci
+    myBrain.train(input, expectedOutput);
+
+    // 4. Przewidywanie (feedforward)
+    std::vector<double> result = myBrain.feedForward(input);
+    std::cout << "Wynik sieci: " << result[0] << std::endl;
+
+    // 5. Zapis wyuczonego modelu na dysk
+    myBrain.saveData();
+
     return 0;
 }
-~~~
+```
 
-## 💾 Loading a Saved Model
-You can revive a previously saved network using the overloaded constructor:
-
-~~~cpp
-// Automatically reads architecture, weights, and biases from the configuration file
-Network trainedNet("model.txt"); 
-~~~
-
-## 🛠️ Compilation
-Compile the project using any standard C++ compiler (C++11 or higher recommended):
-
-~~~bash
-g++ main.cpp -o CoreNN -std=c++17
-./CoreNN
-~~~
+## 🧪 Przykłady i Testy
+Wewnętrzna logika silnika została z sukcesem przetestowana na klasycznych problemach uczenia maszynowego:
+* **Bramka XOR:** Weryfikacja zdolności sieci do rozwiązywania problemów nieliniowo separowalnych.
+* **Wykrywanie parzystości bitów:** Nauka rozpoznawania wzorców na 10-elementowych ciągach wejściowych.

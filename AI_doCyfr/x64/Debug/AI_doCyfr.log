@@ -1,5 +1,6 @@
-﻿  AI_doCyfr.cpp
-C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(233,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
-C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(276,42): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
-C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\AI_doCyfr.cpp(72,1): warning C4715: "Layer::pochodna”: niewszystkie ścieżki kodu zwracają wartość
+﻿  main.cpp
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\TestParity.h(12,26): warning C4267: "argument": konwersja z "size_t" do "int", możliwa utrata danych
+  (kompilowanie pliku źródłowego „main.cpp”)
+  
+C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\NeuralNetwork.h(68,1): warning C4715: "Layer::derivative”: niewszystkie ścieżki kodu zwracają wartość
   AI_doCyfr.vcxproj -> C:\Users\Piotrek\Piotrek\Programowanie\C++\AI_doCyfr\x64\Debug\AI_doCyfr.exe
