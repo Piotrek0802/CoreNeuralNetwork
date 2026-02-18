@@ -4,6 +4,8 @@
 #include <fstream>
 #include <cstdlib>
 #include <random>
+#include <iomanip>
+#include <limits>
 
 using Vector = std::vector<double>;
 using Matrix = std::vector<std::vector<double>>;
@@ -192,13 +194,14 @@ public:
 		plik << "\n";
 		plik << "::::CONFIG::::\n";
 
+		plik << std::setprecision(std::numeric_limits<double>::max_digits10);
 
 		plik << "Wagi:\n";
 		for (int i = 0; i <= ileHiddenLayers; i++)
 		{
 			for (int j = 0; j < layers[i].outputSize; j++)
 			{
-				plik << "Neuron-w" << i << "/" << j << ": ";
+				plik << "Neuron-w:" << i << "/" << j << ": ";
 				for (int k = 0; k < layers[i].wagi[j].size(); k++)
 				{
 					plik << layers[i].wagi[j][k] << " ";
@@ -216,6 +219,65 @@ public:
 			}
 			plik << "\n";
 		}
+
+		plik.close();
+	}
+	void wczytajDane() {
+		std::fstream plik;
+		plik.open(nazwaPliku, std::ios::in);
+		if (plik.good() != true || plik.is_open() != true)
+		{
+			return;
+		}
+
+		std::string dummy;
+		int tempAktywacja;
+
+		plik >> dummy;
+		plik >> dummy >> dummy >> inSize;
+		plik >> dummy >> dummy >> outSize;
+		plik >> dummy >> dummy >> dummy >> tempAktywacja;
+		rodzAktywacji = tempAktywacja;
+
+		plik >> dummy >> dummy >> dummy >> dummy >> ileHiddenLayers;
+
+		for (int i = 0; i < 6; i++)
+		{
+			plik >> dummy;
+		}
+
+		ileNeuronsInLayers.resize(ileHiddenLayers);
+		for (size_t i = 0; i < ileNeuronsInLayers.size(); i++)
+		{
+			plik >> ileNeuronsInLayers[i];
+		}
+
+		plik >> dummy;
+		plik >> dummy;
+
+		for (int i = 0; i <= ileHiddenLayers; i++)
+		{
+			for (int j = 0; j < layers[i].outputSize; j++)
+			{
+				plik >> dummy;
+				for (int k = 0; k < layers[i].wagi[j].size(); k++)
+				{
+					plik >> layers[i].wagi[j][k];
+				}
+			}
+		}
+
+		plik >> dummy;
+
+		for (int i = 0; i <= ileHiddenLayers; i++)
+		{
+			for (int j = 0; j < layers[i].outputSize; j++)
+			{
+				plik >> layers[i].bias[j];
+			}
+		}
+
+		plik.close();
 	}
 private:
 
@@ -338,7 +400,9 @@ void testParzystosci(const int& x) {
 		std::cout << "Wynik sieci: " << odpowiedz[0];
 		std::cout << " (Oczekiwano: " << wyniki[j][0] << ")\n";
 	}
+	mojaSiec.zapiszDane();
 }
+
 int main()
 {
 	//testXOR();//test czy siec jest wstanie wykonac operacje XOR
