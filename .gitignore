@@ -45,3 +45,4 @@
 *.db
 *.sqlite
 *.tlog
+/Test_tic-tac-toe.h
